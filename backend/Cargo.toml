@@ -1,5 +1,5 @@
 [package]
-name = "todo"
+name = "BallotPaper"
 version = "0.1.0"
 authors = ["bofeiw <bofei@mail.com>"]
 edition = "2018"
