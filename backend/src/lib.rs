@@ -15,11 +15,11 @@ impl BallotPaper {
     fn init(_params: &mut Parameters) -> Self {
         let mut votes: HashMap<String, u32> = HashMap::new();
 
-        votes.insert("a".to_string(), 0);
-        votes.insert("b".to_string(), 0);
-        votes.insert("c".to_string(), 0);
-        votes.insert("d".to_string(), 0);
-        votes.insert("e".to_string(), 0);
+        votes.insert("AYIREBI, CECIL (LIBERAL)".to_string(), 0);
+        votes.insert("BUTLER, DIONE (PEPUBLICAN)".to_string(), 0);
+        votes.insert("GARSIDE, CHARLES (LABOUR)".to_string(), 0);
+        votes.insert("KING, STUART (DEMOCRATIC)".to_string(), 0);
+        votes.insert("WHITWELL, FRANK (GREEN)".to_string(), 0);
 
         Self {
             votes: votes,
