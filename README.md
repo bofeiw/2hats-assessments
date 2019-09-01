@@ -1,8 +1,27 @@
 # Blockchain Challenge
 
+Hello there! This is my solution of my solution to the Blockchain Challenge on 2hats!
+
+It does not have a nice UI, and the concentration is to get the distributed election system working.
+
+It works!!! Thanks to the helps from the friendly Perlin discord channel!
+
+I left a default Secret ID and a Contract ID for you to play with, which you can directly click on the buttons to continue. 
+
 ## Build wasm file
 
-`cargo build --release --target=wasm32-unknown-unknown`
+```
+cd backend
+cargo build --release --target=wasm32-unknown-unknown
+```
+
+## Run front end
+
+```
+cd frontend
+npm install
+npm run serve
+```
 
 ## Not compiling 
 Because the newest nightly has issues.
