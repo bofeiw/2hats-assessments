@@ -22,7 +22,7 @@ npm run serve
 
 It does not have a nice UI, and the concentration is to get the distributed election system working.
 
-[!interface](screenshot/interface.png)
+![interface](screenshot/interface.png)
 
 ## Not compiling 
 Because the newest nightly has issues.
