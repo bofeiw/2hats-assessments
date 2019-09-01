@@ -8,6 +8,8 @@ use std::collections::HashMap;
 struct BallotPaper {
     votes: HashMap<String, u32>,
     voted_ids: VecDeque<[u8; 32]>,
+    year: String,
+    location: String
 }
 
 #[smart_contract]
@@ -24,6 +26,8 @@ impl BallotPaper {
         Self {
             votes: votes,
             voted_ids: VecDeque::new(),
+            year: "2020".to_string(),
+            location: "NORTH HUDSON".to_string(),
         }
     }
 
@@ -70,6 +74,16 @@ impl BallotPaper {
 
         log(&votes.join(";"));
 
+        Ok(())
+    }
+
+    fn get_year(&mut self, _params: &mut Parameters) -> Result<(), String> {
+        log(self.year.as_mut_str());
+        Ok(())
+    }
+
+    fn get_location(&mut self, _params: &mut Parameters) -> Result<(), String> {
+        log(self.location.as_mut_str());
         Ok(())
     }
 }

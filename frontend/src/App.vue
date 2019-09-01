@@ -4,7 +4,7 @@
             <h2>Load Election Contract</h2>
             <p>[Node]    </p><input type="text" id="node" value="https://testnet.perlin.net"/><br>
             <p>[Secret]  </p><input type="text" id="secret" value="a6c82664cfebc00595ed4c4c2425dc5059296c686f26fc02ec0e42d312015c79b2e8e3167a6665386dd226cc7f3b693d9d44f760ff146424789aff3e707927c1"/><button @click="setconnect()">Connect</button> <br>
-            <p>[Contract]</p><input type="text" id="contract" value="2d3d837bbbd037ded1a9037ca49c1fc4d64b794b8816c3e4278e8f575bb688e2"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
+            <p>[Contract]</p><input type="text" id="contract" value="2be14e0b68c87ea19b3607bf55879ba8869166f084f57daf7019cffea5dcc479"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
             <p>* You will login with your Secret</p>
             <p>* Load contract populates the Ballot paper with election information</p>
         </div>
@@ -22,6 +22,8 @@
 
         <div id="vote">
             <H2>BALLOT PAPER</H2>
+            <h3>YEAR: {{ year }}</h3>
+            <h3>LOCATION: {{ location }}</h3>
             <ol id="choose">
                 <li v-for="(vote, idx) in votes">
                     <select>
@@ -58,6 +60,8 @@
             return {
                 logged: false,
                 votes: [],
+                year: undefined,
+                location: undefined
             }
         },
         methods: {
@@ -119,12 +123,15 @@
                 });
 
                 // if is voted already
-                const raw = this.$contract.test(this.$wallet, 'is_voted', JSBI.BigInt(0));
-                if (raw.logs[0] === '1') {
+                const is_voted = this.$contract.test(this.$wallet, 'is_voted', JSBI.BigInt(0));
+                if (is_voted.logs[0] === '1') {
                     document.getElementById('choose').style.display = 'none';
                     document.getElementById('choose-submit').style.display = 'none';
                     document.getElementById('choose-disable').style.display = 'block';
                 }
+
+                self.year = this.$contract.test(this.$wallet, 'get_year', JSBI.BigInt(0)).logs[0];
+                self.location = this.$contract.test(this.$wallet, 'get_location', JSBI.BigInt(0)).logs[0];
             },
             async vote() {
                 if (! this.logged) return;
