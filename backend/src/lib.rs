@@ -5,6 +5,10 @@ use smart_contract::payload::Parameters;
 use std::collections::VecDeque;
 use std::collections::HashMap;
 
+// votes: candidate name -> vote count
+// voted_ids: all the  public ids of the account that is voted
+// year: year of election
+// location: location of election
 struct BallotPaper {
     votes: HashMap<String, u32>,
     voted_ids: VecDeque<[u8; 32]>,
@@ -14,6 +18,8 @@ struct BallotPaper {
 
 #[smart_contract]
 impl BallotPaper {
+
+    // initialise default values
     fn init(_params: &mut Parameters) -> Self {
         let mut votes: HashMap<String, u32> = HashMap::new();
 
@@ -31,6 +37,7 @@ impl BallotPaper {
         }
     }
 
+    // log "1" if the requesting id is voted, log "0" otherwise
     fn is_voted(&mut self, params: &mut Parameters) -> Result<(), String> {
         let id: [u8; 32] = params.sender;
         let voted: bool = self.voted_ids.contains(&id);
@@ -44,6 +51,10 @@ impl BallotPaper {
         Ok(())
     }
 
+    // do the vote if the requesting id is not voted
+    // and mark the requesting id as voted
+    // params.read() should have 5 Strings, each indicate the
+    // candidates from 1 points to 5 points.
     fn vote(&mut self, params: &mut Parameters) -> Result<(), String> {
         let id: [u8; 32] = params.sender;
         let voted: bool = self.voted_ids.contains(&id);
@@ -65,6 +76,9 @@ impl BallotPaper {
         Ok(())
     }
 
+    // log vote information.
+    // Entry (Candidate name and vote count) is separated by ":"
+    // Entries are separated bt ";"
     fn get_votes(&mut self, _params: &mut Parameters) -> Result<(), String> {
         let mut votes = Vec::new();
 
@@ -77,11 +91,13 @@ impl BallotPaper {
         Ok(())
     }
 
+    // log year of election
     fn get_year(&mut self, _params: &mut Parameters) -> Result<(), String> {
         log(self.year.as_mut_str());
         Ok(())
     }
 
+    // log location of election
     fn get_location(&mut self, _params: &mut Parameters) -> Result<(), String> {
         log(self.location.as_mut_str());
         Ok(())

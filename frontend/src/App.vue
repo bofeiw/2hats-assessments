@@ -58,16 +58,20 @@
         },
         data() {
             return {
-                logged: false,
+                logged: false,  // if the user is logged in the contract
                 votes: [],
                 year: undefined,
                 location: undefined
             }
         },
         methods: {
+            // handle connect button, enable load button
             setconnect() {
                 document.getElementById('contract-button').disabled = false;
             },
+
+            // handle load button
+            // connect to server and do display information
             setcontract() {
                 const clientAddr = document.getElementById("node").value;
                 const secretAddr = document.getElementById("secret").value;
@@ -87,6 +91,7 @@
                 this.init();
             },
 
+            // init contract
             async init() {
                 const that = this;
                 return await this.$contract.init().then(() => {
@@ -94,6 +99,8 @@
                     that.listen();
                 })
             },
+
+            // update vote information display
             getVotes() {
                 if (! this.logged) return;
                 const raw = this.$contract.test(this.$wallet, 'get_votes', JSBI.BigInt(0));
@@ -110,6 +117,8 @@
                     this.votes = []
                 }
             },
+
+            // listen for changes and update information
             async listen() {
                 if (! this.logged) return;
                 var self = this
@@ -133,6 +142,8 @@
                 self.year = this.$contract.test(this.$wallet, 'get_year', JSBI.BigInt(0)).logs[0];
                 self.location = this.$contract.test(this.$wallet, 'get_location', JSBI.BigInt(0)).logs[0];
             },
+
+            // handle vote button
             async vote() {
                 if (! this.logged) return;
                 const data = [];
