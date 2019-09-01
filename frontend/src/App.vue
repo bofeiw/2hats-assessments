@@ -1,9 +1,12 @@
 <template>
     <div id="app">
         <div id="load">
+            <h2>Load Election Contract</h2>
             <p>[Node]    </p><input type="text" id="node" value="https://testnet.perlin.net"/><br>
             <p>[Secret]  </p><input type="text" id="secret" value="a6c82664cfebc00595ed4c4c2425dc5059296c686f26fc02ec0e42d312015c79b2e8e3167a6665386dd226cc7f3b693d9d44f760ff146424789aff3e707927c1"/><button @click="setconnect()">Connect</button> <br>
-            <p>[Contract]</p><input type="text" id="contract" value="11a3081c85355ef10a875388ec12e35dcaf74db92b6b0a94c58616d9c704bb98"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
+            <p>[Contract]</p><input type="text" id="contract" value="2d3d837bbbd037ded1a9037ca49c1fc4d64b794b8816c3e4278e8f575bb688e2"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
+            <p>* You will login with your Secret</p>
+            <p>* Load contract populates the Ballot paper with election information</p>
         </div>
 
         <div id="result">
@@ -14,6 +17,7 @@
                     <p>{{ vote.points }} Points</p>
                 </li>
             </ol>
+            <p>* Election information is displayed once you load up the Contract.</p>
         </div>
 
         <div id="vote">
@@ -30,7 +34,12 @@
                     <p>{{ vote.name }}</p>
                 </li>
             </ol>
-            <button @click="vote">Submit Vote</button>
+            <button id="choose-submit" @click="vote">Submit Vote</button>
+            <h3 id="choose-disable" style="display: none">
+                You voted before. No duplicated vote.
+            </h3>
+            <p>- Repeating candidate number is not allowed.</p>
+            <p>- You can only vote once, multiple submit is not allowed.</p>
         </div>
     </div>
 </template>
@@ -84,8 +93,6 @@
             getVotes() {
                 if (! this.logged) return;
                 const raw = this.$contract.test(this.$wallet, 'get_votes', JSBI.BigInt(0));
-                console.log(raw);
-                console.log("done");
 
                 if (raw.logs[0]) {
                     this.votes = raw.logs[0].split(';').map((a, aidx) => {
@@ -95,7 +102,6 @@
                             points: parseInt(matched[1])
                         }
                     }).sort((a, b) => a.points - b. points);
-                    console.log(this.votes);
                 } else {
                     this.votes = []
                 }
@@ -111,6 +117,14 @@
                         })();
                     }
                 });
+
+                // if is voted already
+                const raw = this.$contract.test(this.$wallet, 'is_voted', JSBI.BigInt(0));
+                if (raw.logs[0] === '1') {
+                    document.getElementById('choose').style.display = 'none';
+                    document.getElementById('choose-submit').style.display = 'none';
+                    document.getElementById('choose-disable').style.display = 'block';
+                }
             },
             async vote() {
                 if (! this.logged) return;
@@ -141,53 +155,28 @@
 </script>
 
 <style>
-    html, body, pre, code, kbd, samp {
-        font-family: "Press Start 2P";
+    #vote {
+        grid-area: vote;
     }
-
-    body {
-        background: #20262E;
-        padding: 20px;
+    #load {
+        grid-area: load;
+    }
+    #result {
+        grid-area: result;
     }
 
     #app {
-        background: #fff;
-        border-radius: 4px;
-        padding: 20px;
-        transition: all 0.2s;
-        margin: 2rem;
-        padding: 2rem;
+        display: grid;
+        grid-template-areas:
+                "load   vote"
+                "result vote";
+        grid-gap: 10px;
+        padding: 10px;
+        background-color: whitesmoke;
     }
 
-    ol {
-        margin-left: 16px;
-    }
-
-    li {
-        margin: 8px 0;
-    }
-
-    h2 {
-        font-weight: bold;
-        margin-bottom: 15px;
-    }
-
-    del {
-        color: rgba(0, 0, 0, 0.3);
-    }
-
-    .nes-btn {
-        padding: 0px 4px;
-        margin: 0px;
-    }
-
-    .spacer {
-        height: 1rem;
-    }
-
-    textarea {
-        width: 100%;
-        border: none;
-        height: 200px;
+    #app > div {
+        background-color: rgba(255, 255, 255, 0.8);
+        padding: 20px 0;
     }
 </style>
