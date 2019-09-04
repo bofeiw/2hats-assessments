@@ -102,4 +102,10 @@ impl BallotPaper {
         log(self.location.as_mut_str());
         Ok(())
     }
+
+    // used to validate contract is real
+    fn validate(&mut self, _params: &mut Parameters) -> Result<(), String> {
+        log("itsrealcontract");
+        Ok(())
+    }
 }

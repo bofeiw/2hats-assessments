@@ -4,7 +4,7 @@
             <h2>Load Election Contract</h2>
             <p>[Node]    </p><input type="text" id="node" value="https://testnet.perlin.net"/><br>
             <p>[Secret]  </p><input type="text" id="secret" value="a6c82664cfebc00595ed4c4c2425dc5059296c686f26fc02ec0e42d312015c79b2e8e3167a6665386dd226cc7f3b693d9d44f760ff146424789aff3e707927c1"/><button @click="setconnect()">Connect</button> <br>
-            <p>[Contract]</p><input type="text" id="contract" value="2be14e0b68c87ea19b3607bf55879ba8869166f084f57daf7019cffea5dcc479"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
+            <p>[Contract]</p><input type="text" id="contract" value="e4ee00ddc3273d49378ed577983d06ed9137e963bac083d28b1d72427326a9db"/><button id="contract-button" type="button" disabled @click="setcontract()">Load Ballot Paper</button> <br>
             <p>* You will login with your Secret</p>
             <p>* Load contract populates the Ballot paper with election information</p>
         </div>
@@ -27,11 +27,8 @@
             <ol id="choose">
                 <li v-for="(vote, idx) in votes">
                     <select>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
-                        <option value="3">3</option>
-                        <option value="4">4</option>
-                        <option value="5">5</option>
+                        <option v-for="v in 5" v-if="v-1 === idx" selected>{{ v }}</option>
+                        <option v-else>{{ v }}</option>
                     </select>
                     <p>{{ vote.name }}</p>
                 </li>
@@ -68,17 +65,31 @@
             // handle connect button, enable load button
             setconnect() {
                 document.getElementById('contract-button').disabled = false;
+                window.alert("Secret Loaded")
             },
 
             // handle load button
             // connect to server and do display information
-            setcontract() {
+            async setcontract() {
                 const clientAddr = document.getElementById("node").value;
                 const secretAddr = document.getElementById("secret").value;
                 const contractAddr = document.getElementById("contract").value;
                 const client = new Wavelet(clientAddr);
                 const wallet = Wavelet.loadWalletFromPrivateKey(secretAddr);
-                const contract = new Contract(client, contractAddr);
+                let contract;
+
+                try {
+                    contract = new Contract(client, contractAddr);
+                    await contract.init();
+                } catch (e) {
+                    alert("Incorrect Contract");
+                    return;
+                }
+                const validate = contract.test(wallet, 'validate', JSBI.BigInt(0));
+                if (validate.logs[0] !== "itsrealcontract") {
+                    alert("Incorrect Contract");
+                    return;
+                }
 
                 Vue.use({
                     install (Vue) {
@@ -88,16 +99,10 @@
                     }
                 });
                 this.logged = true;
-                this.init();
-            },
+                this.getVotes();
+                this.listen();
 
-            // init contract
-            async init() {
-                const that = this;
-                return await this.$contract.init().then(() => {
-                    that.getVotes();
-                    that.listen();
-                })
+                alert("Contract loaded");
             },
 
             // update vote information display
@@ -112,7 +117,7 @@
                             name: matched[0],
                             points: parseInt(matched[1])
                         }
-                    }).sort((a, b) => a.points - b. points);
+                    }).sort((a, b) => b.points - a. points);
                 } else {
                     this.votes = []
                 }
@@ -151,11 +156,24 @@
                    const innerData = node.childNodes;
                    data.push({preference: parseInt(innerData[0].value), name: innerData[1].innerHTML})
                 });
-                data.sort((a, b) => b.preference - a.preference);
-                console.log(data);
 
-                var self = this
-                return await this.$contract.call(
+                // check if voted before
+                const is_voted = this.$contract.test(this.$wallet, 'is_voted', JSBI.BigInt(0));
+                if (is_voted.logs[0] === '1') {
+                    alert("You voted before. No duplicated vote.");
+                    return;
+                }
+
+                // check vote uniqueness
+                if (hasDuplicates(data.map(value => value.preference))) {
+                    alert("Please make sure your voting preferences are unique.");
+                    return;
+                }
+
+                // sort in decreasing order by voting preference
+                data.sort((a, b) => b.preference - a.preference);
+
+                await this.$contract.call(
                     this.$wallet,
                     'vote',
                     JSBI.BigInt(0),
@@ -166,9 +184,15 @@
                     {type: "string", value: data[2].name},
                     {type: "string", value: data[3].name},
                     {type: "string", value: data[4].name},
-                )
+                ).then(() => {
+                    this.setcontract();
+                })
             },
         }
+    }
+
+    function hasDuplicates(array) {
+        return (new Set(array)).size !== array.length;
     }
 </script>
 
