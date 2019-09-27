@@ -1,4 +1,4 @@
-/backend/target
+/blockchain-challenge/backend/target
 **/*.rs.bk
-backend/Cargo.lock
+blockchain-challenge/backend/Cargo.lock
 .idea/
