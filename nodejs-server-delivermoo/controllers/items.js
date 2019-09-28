@@ -1,20 +1,20 @@
-const dbQuery = require("../db/index");
+const db = require("../db/index");
 
 function getItems(req, res, next) {
-    try {
-        const allItems = dbQuery.getItemsAll();
-        console.log(allItems)
-        res.send({
-            success: true,
-            // TODO
-            items: allItems
-        });
-    } catch (e) {
-        res.send({
-            success: false,
-            items: null
-        })
-    }
+    db.getItemsAll(function (err, rows) {
+        if (err) {
+            res.send({
+                success: false,
+                items: null
+            })
+        } else {
+            // directly return all rows
+            res.send({
+                success: true,
+                items: rows
+            });
+        }
+    });
 }
 
 function addItems(req, res, next) {

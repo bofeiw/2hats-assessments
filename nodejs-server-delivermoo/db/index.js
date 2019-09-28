@@ -56,72 +56,34 @@ function init() {
 
 /*
 * query item by id
-* return item if found, otherwise return null
 * */
-function getItem(itemID) {
-    db.get(`SELECT * FROM Items WHERE id = ${itemID}`, function (err, row) {
-        if (err) {
-            throw err
-        } else if (row.length === 1) {
-            // found the item
-            return row
-        } else {
-            return null
-        }
-    });
+function getItem(itemID, callback) {
+    db.get(`SELECT * FROM Items WHERE id = '${itemID}'`, callback);
 }
 
 /*
 * query all items
-* return a list of items
 * */
-async function getItemsAll() {
-    await db.all(`SELECT * FROM Items`, function (err, rows) {
-        console.log("selected")
-        if (err) {
-            throw err
-        } else {
-            // directly return all rows
-            return rows
-        }
-    })
-    console.log("returned")
+function getItemsAll(callback) {
+    db.all(`SELECT * FROM Items`, callback);
 }
 
 /*
 * query all orders
-* return a list of orders
 * */
-function getOrdersAll() {
-    db.all(`SELECT * FROM Orders`, function (err, rows) {
-        if (err) {
-            throw err
-        } else {
-            // directly return all rows
-            return rows
-        }
-    })
+function getOrdersAll(callback) {
+    db.all(`SELECT * FROM Orders`, callback)
 }
 
 /*
 * query order by id
-* return the order if exist, return null otherwise
 * */
-function getOrder(orderID) {
-    db.get(`SELECT * FROM Orders WHERE id = ${orderID}`, function (err, row) {
-        if (err) {
-            throw err
-        } else if (row.length === 1) {
-            // found the order
-            return row
-        } else {
-            throw "Order does not exists"
-        }
-    });
+function getOrder(orderID, callback) {
+    db.get(`SELECT * FROM Orders WHERE id = '${orderID}'`, callback);
 }
 
 function addOrder(order) {
-    return true
+    db.run(`INSERT INTO Orders VALUES ('${order.id}','${order.itemId}',${order.quantity})`)
 }
 
 function addItem(items) {
@@ -129,7 +91,7 @@ function addItem(items) {
 }
 
 function updateItemStock(itemID, stock) {
-    return true
+    db.run(`UPDATE Items SET stock = ${stock} WHERE id = '${itemID}'`)
 }
 
 function deleteItem(itemID) {

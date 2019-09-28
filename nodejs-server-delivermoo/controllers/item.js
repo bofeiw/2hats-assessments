@@ -1,11 +1,26 @@
-const dbQuery = require("../db/index");
+const db = require("../db/index");
 
 function getItem(req, res, next) {
-    const item = dbQuery.getItem(req.params.id);
-    res.send({
-        success: true,
-        // TODO
-        item
+    db.getItem(req.params.id, function (err, row) {
+        console.log(row);
+        if (err) {
+            res.send({
+                success: false,
+                message: err
+            })
+        } else if (row) {
+            // found the item
+            res.send({
+                success: true,
+                item: row
+            })
+        } else {
+            // item not exist
+            res.send({
+                success: false,
+                message: "Item could not be found"
+            })
+        }
     });
 }
 
