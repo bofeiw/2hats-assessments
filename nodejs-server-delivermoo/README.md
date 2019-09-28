@@ -11,6 +11,9 @@ npm start
 
 2. Access `localhost:3000/` in anyway you want.
 
+3. OR use `http://bofei.io/3000/`, which is the same thing prepared for you to play with, without setting up localhost.  
+Make sure it is `http`, not `https`.
+
 ## Walk through in Postman
 
 [Postman](https://www.getpostman.com) is a powerful tool for performing integration testing with your API.
