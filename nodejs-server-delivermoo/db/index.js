@@ -50,7 +50,37 @@ function getItemsAll() {
     }]
 }
 
+function getOrdersAll() {
+    return []
+}
+
+function getOrder(orderID) {
+    return {}
+}
+
+function addOrder(order) {
+    return true
+}
+
+function addItem(items) {
+    return true
+}
+
+function updateItemStock(itemID, stock) {
+    return true
+}
+
+function deleteItem(itemID) {
+    return true
+}
+
 module.exports = {
     getItem,
-    getItemsAll
+    getItemsAll,
+    getOrdersAll,
+    getOrder,
+    addOrder,
+    addItem,
+    updateItemStock,
+    deleteItem
 };
