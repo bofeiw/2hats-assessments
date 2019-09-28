@@ -1,7 +1,8 @@
-const TokenGenerator = require('uuid-token-generator');
 const db = require("../db/index");
+const TokenGenerator = require('uuid-token-generator');
 const idGenerator = new TokenGenerator(256, TokenGenerator.BASE62);
 
+/* handles request to get all orders */
 function getOrdersAll(req, res, next) {
     db.getOrdersAll(function (err, rows) {
         if (err) {
@@ -19,6 +20,7 @@ function getOrdersAll(req, res, next) {
     });
 }
 
+/* handles request to make an order */
 function makeOrder(req, res, next) {
     const itemId = req.body.itemId;
     const quantity = req.body.quantity;

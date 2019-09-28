@@ -2,6 +2,7 @@ var createError = require('http-errors');
 var express = require('express');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
+var bearerToken = require('express-bearer-token');
 
 var indexRouter = require('./routes/index');
 var itemsRouter = require('./routes/items');
@@ -11,12 +12,12 @@ var orderRouter = require('./routes/order');
 var db = require('./db/index');
 
 var app = express();
-db.init();
 
 app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
+app.use(bearerToken());
 
 app.use('/', indexRouter);
 app.use('/items', itemsRouter);
