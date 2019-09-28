@@ -1,6 +1,5 @@
 var createError = require('http-errors');
 var express = require('express');
-var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
@@ -9,8 +8,10 @@ var itemsRouter = require('./routes/items');
 var itemRouter = require('./routes/item');
 var ordersRouter = require('./routes/orders');
 var orderRouter = require('./routes/order');
+var db = require('./db/index');
 
 var app = express();
+db.init();
 
 app.use(logger('dev'));
 app.use(express.json());
