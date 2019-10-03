@@ -16,6 +16,8 @@
 
 #header > img {
     width: 100%;
+    min-height: 200px;
+    object-fit: cover;
 }
 
 #header > div {
@@ -31,6 +33,16 @@
     cursor: pointer;
 }
 
+.header-brand > img {
+    height: 24px;
+    width: auto;
+}
+
+.header-brand > span {
+    display: inline-block;
+    vertical-align: top;
+}
+
 .header-icon {
     top: 10%;
     right: 5%;
@@ -43,7 +55,7 @@
 .header-icon > img {
     height: 1.5em;
     width: 1.5em;
-    margin-right: 1.5em;
+    margin-left: 1.5em;
 }
 
 .header-banner {
@@ -67,17 +79,17 @@
     bottom: 15%;
     top: 30%;
     right: 5%;
-    font-size: 0.2em;
+    font-size: 0.5em;
     writing-mode: vertical-rl;
     transform: rotate(180deg);
     text-transform: uppercase;
     font-weight: lighter;
     font-family: Courier, sans-serif;
+    letter-spacing: 0.1em;
 }
 
 @media screen and (max-width: 768px) {
     .header-banner {
-        bottom: 5%;
         left: 10%;
     }
 
@@ -86,7 +98,11 @@
     }
 
     .header-side {
-        display: none;
+        writing-mode: horizontal-tb;
+        transform: none;
+        bottom: 5%;
+        left: 10%;
+        top: auto;
     }
 }
 
@@ -114,6 +130,29 @@
 .product {
     margin: 1em 0;
     cursor: pointer;
+}
+
+.product img {
+    transition: opacity 0.3s ease;
+}
+
+.product:hover img {
+    opacity: 0.3;
+}
+
+.product-image-wrapper:before {
+    content: "Purchase product";
+    position: absolute;
+    display: inline;
+    transform: translate(-50%, -25px);
+    left: 50%;
+    top: 50%;
+    opacity: 0;
+    transition: opacity 0.3s ease;
+}
+
+.product:hover .product-image-wrapper:before {
+    opacity: 1;
 }
 
 .product-body {

@@ -1,3 +1,5 @@
+// mock data only, not included in html
+
 const ASSETS = {
     mockup:
         'https://firebasestorage.googleapis.com/v0/b/production2hats.appspot.com/o/studentPortal%2Fassessment-web-design%2FMockup.png?alt=media&token=86310acc-1373-44a9-a3c9-ddd0580f9b11',
@@ -103,30 +105,3 @@ const ITEMS = [
             'https://firebasestorage.googleapis.com/v0/b/production2hats.appspot.com/o/studentPortal%2Fassessment-web-design%2Fcherry_wood.png?alt=media&token=a70a9ac4-21a1-4933-8a41-f214debcff57',
     },
 ];
-
-// when loaded, insert all products to page
-window.onload = () => {
-    const productList = document.querySelector('#product-list');
-    for (const item of ITEMS) {
-        productList.appendChild(htmlToElement(`
-                <div class="col-lg-3 col-md-4 col-sm-6 col-12">
-                    <div class="product">
-                        <img src="${item.image}" class="card-img-top" alt="product">
-                        <div class="product-body">
-                            <div class="product-title">${item.title}</div>
-                            <div class="product-price">${item.price.toFixed(2)}</div>
-                        </div>
-                    </div>
-                </div>
-            `))
-    }
-};
-
-// transform string to dom element
-// source: https://stackoverflow.com/a/35385518/9494810
-function htmlToElement(html) {
-    var template = document.createElement('template');
-    html = html.trim(); // Never return a text node of whitespace as the result
-    template.innerHTML = html;
-    return template.content.firstChild;
-}
